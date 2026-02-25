@@ -14,5 +14,15 @@ yarn-error.log*
 # VS Code
 .vscode/
 
-# OS fájlok
+# OS
 .DS_Store
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+
+/.idea/
+tests/example.spec.ts

@@ -1,5 +1,5 @@
 import {Locator, type Page} from "playwright/test"
-import { ContactData } from "../data/formData";
+import { ContactData } from "../types/contactData";
 
 
 
@@ -31,15 +31,15 @@ export class ContactPage{
     await this.page.goto("https://practicesoftwaretesting.com/contact");
     }
 
-    async fillForm(formData : ContactData){
+    async fillForm(formData : ContactData) {
         await this.firstName.fill(formData.firstName);
         await this.lastName.fill(formData.lastName);
         await this.emailAdd.fill(formData.email);
-        await this.subject.selectOption(formData.selectOption);
+        await this.subject.selectOption(formData.subject);
         await this.message.fill(formData.message);
     }
     async submitForm(){
-        this.sendBtn.click();
+        await this.sendBtn.click();
     }
     async getAlertText(): Promise<string>{
         let alertText = await this.alert.innerText();

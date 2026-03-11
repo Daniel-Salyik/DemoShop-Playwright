@@ -1,4 +1,4 @@
- export type ContactData {
+ export type ContactData = {
     firstName : string;
     lastName : string;
     email : string;

@@ -31,18 +31,21 @@ export class ContactPage{
     await this.page.goto("https://practicesoftwaretesting.com/contact");
     }
 
-    async fillForm(formData : ContactData) {
-        await this.firstName.fill(formData.firstName);
-        await this.lastName.fill(formData.lastName);
-        await this.emailAdd.fill(formData.email);
-        await this.subject.selectOption(formData.subject);
-        await this.message.fill(formData.message);
-    }
+  async fillForm(formData: Partial<ContactData>) {
+    if (formData.firstName !== undefined) await this.firstName.fill(formData.firstName);
+    if (formData.lastName !== undefined) await this.lastName.fill(formData.lastName);
+    if (formData.email !== undefined) await this.emailAdd.fill(formData.email);
+    if (formData.subject !== undefined) await this.subject.selectOption(formData.subject);
+    if (formData.message !== undefined) await this.message.fill(formData.message);
+}
     async submitForm(){
         await this.sendBtn.click();
     }
-    async getAlertText(): Promise<string>{
-        let alertText = await this.alert.innerText();
+    async getAlertTexts(): Promise<string[]>{
+        
+
+        // using trim function on the text to avoid any possible white spaces in the text
+        const alertText = (await this.alert.allTextContents()).map(text => text.trim());
         if(alertText !== null) {
             return alertText;
         } else{

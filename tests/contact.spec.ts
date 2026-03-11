@@ -1,24 +1,86 @@
 import { test, expect } from '@playwright/test';
 import { ContactPage } from '../pages/contact.page';
 import { ContactData } from '../types/contactData';
+import { ContactTestCase } from '../types/contactTestCase';
 
 
-test('Guest submits contact form without attachment', async({page}) => {
-    const contact = new ContactPage(page);
+const testCases: ContactTestCase[] = [
+    {
+        name: "Guest successfully submits contact form without attachment",
+        data : {
+            firstName: "John",
+            lastName: "Doe",
+            email: "john@test.com",
+            subject: "Warranty",
+            message: "Test".repeat(15)
+        },
+        expected : ["Thanks for your message! We will contact you shortly."]
+    },
+    {
+        name: "Missing first name",
+        data: {
+            lastName: "Doe",
+            email: "john@test.com",
+            subject: "Warranty",
+            message: "Test message".repeat(5)
+        },
+        expected: ["First name is required"]
+    },
+    {
+        name: "Missing email",
+        data: {
+            firstName: "John",
+            lastName: "Doe",
+            subject: "Customer service",
+            message : "Test". repeat(15),
+        },
+        expected : ["Email is required"]
+    },
+    {
+        name: "Invalid email format",
+        data: {
+            firstName: "John",
+            lastName: "Doe",
+            email: "invalid-email",
+            subject: "Warranty",
+            message: "Test message".repeat(5)
+        },
+        expected: ["Email format is invalid"]
+    },
+    {
+        name: "No subject",
+        data: {
+            firstName: "John",
+            lastName: "Doe",
+            email: "john@test.com",
+            message: "Test message".repeat(5)
+        },
+        expected: ["Subject is required"]
+    },
+    {
+        name: "No message",
+        data: {
+            firstName: "John",
+            lastName: "Doe",
+            email: "john@test.com",
+            subject: "Warranty"
+        },
+        expected: ["Message is required"]
+    },
+];
 
-    const data: ContactData = {
-        firstName: "John",
-        lastName: "Doe",
-        email: "john@test.com",
-        subject: "Warranty",
-        message: "Test".repeat(15)
-    }
-    await contact.goto();
-    await contact.fillForm(data);
-    await contact.submitForm();
+testCases.forEach(({name, data, expected}) => {
+    test(`Contact form validation: ${name}`, async({page}) => {
+        const contact = new ContactPage(page);
 
-    const alertText = await contact.getAlertText();
+        await contact.goto();
+        await contact.fillForm(data as ContactData);
+        await contact.submitForm();
 
-    await expect(alertText).toContain("Thanks for your message");
+        let alertTexts = await contact.getAlertTexts();
 
+        for(let message of expected){
+            expect(alertTexts).toContain(message);
+        }
+    })
 })

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { ContactPage } from '../pages/contact.page';
-import { ContactData } from '../types/contactData';
-import { ContactTestCase } from '../types/contactTestCase';
+import { ContactPage } from '../../pages/contact.page';
+import { ContactData } from '../../types/contactData';
+import { ContactTestCase } from '../../types/contactTestCase';
 
 
 const testCases: ContactTestCase[] = [

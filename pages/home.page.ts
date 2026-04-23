@@ -14,17 +14,19 @@ export class HomePage{
     readonly searchBtn : Locator;
     readonly category : Locator;
     readonly brand : Locator;
-    readonly sustainability : Locator
+    readonly sustainability : Locator;
+    readonly badgeLocator: Locator
 
 
     constructor(page : Page){
         this.page = page;
-        this.sortOption = page.locator('[data-test="sort"]')
-        this.searchField = page.locator('[data-test="search-query"]')
-        this.searchBtn = page.locator('[data-test="search-submit"]')
-        this.category = page.getByRole('heading', { name: 'By category:' })
-        this.brand = page.getByRole('heading', { name: 'By brand:' })
-        this.sustainability = page.getByRole('heading', { name: 'Sustainability:' })
+        this.sortOption = page.locator('[data-test="sort"]');
+        this.searchField = page.locator('#search-query');
+        this.searchBtn = page.locator('[data-test="search-submit"]');
+        this.category = page.getByRole('heading', { name: 'By category:' });
+        this.brand = page.getByRole('heading', { name: 'By brand:' });
+        this.sustainability = page.getByRole('heading', { name: 'Sustainability:' });
+        this.badgeLocator = page.locator(('[data-test="co2-rating-badge"].active'));
     }
 
      async goto() {
@@ -33,14 +35,20 @@ export class HomePage{
 
     async sortProducts(option : SortOptions){
         await this.sortOption.selectOption(option);
+        await this.page.waitForLoadState('networkidle');
     }
     async selectProductByCategory(category : MainCategory | HandtoolSubCategory){
         await this.page.locator('#filters').getByText(category).click();
+        
         await this.page.waitForLoadState('networkidle');
         
     }
     async selectBrand(brand : Brands){
          await this.brand.getByText(brand).click();
+    }
+    async searchProduct(text : string) {
+        await this.searchField.fill(text);
+        await this.searchBtn.click();  
     }
 
     async getProducts() {
@@ -51,9 +59,10 @@ export class HomePage{
         for(const card of productCards) {
             const productName = await card.locator('[data-test="product-name"]').textContent();
             const priceText = await card.locator('[data-test="product-price"]').textContent();
+           
             const price = parseFloat(priceText?.replace('$', '') || '0');
 
-            const badge = await card.locator('[data-test="co2-rating-badge"].active').textContent();
+            const badgeRating = await this.badgeLocator.count() > 0 ? await this.badgeLocator.textContent() : ""
 
             const isEco = await card.locator('[data-test="eco-badge"]').isVisible();
 
@@ -61,7 +70,7 @@ export class HomePage{
             products.push({
                 name : productName || "",
                 price : price,
-                co2Rating : badge || "" ,
+                co2Rating : badgeRating || "" ,
                 isEcofriendly : isEco
 
             });

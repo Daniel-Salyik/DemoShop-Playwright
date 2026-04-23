@@ -87,6 +87,24 @@ test(`user can sort products by co2 rating descending`, async({homePage}) => {
     }
 })
 
-test(`user can filter products by search name`, async({homePage},) => {
-    await homePage.searchProduct("")
+test('user gets no results for unmatched search term', async({homePage}) => {
+    await homePage.searchProducts('xyzabc123');
+    
+    await expect(homePage.noResultsMessage).toBeVisible();
+
+    const emptyProducts = await homePage.getProducts();
+    expect(emptyProducts.length).toBe(0);
+    
+    
+    await homePage.resetSearchResult();
+    const products = await homePage.getProducts();
+    expect(products.length).toBeGreaterThan(0);
+})
+test('user gets results for matched search term', async({homePage}) => {
+
+    await homePage.searchProducts("hammer");
+
+    const products = await homePage.getProducts();
+    expect(products.length).toBeGreaterThan(0);
+    
 })

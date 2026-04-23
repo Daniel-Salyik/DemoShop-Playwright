@@ -12,6 +12,8 @@ export class HomePage{
     readonly sortOption : Locator;
     readonly searchField : Locator;
     readonly searchBtn : Locator;
+    readonly resetBtn : Locator;
+    readonly noResultsMessage : Locator;
     readonly category : Locator;
     readonly brand : Locator;
     readonly sustainability : Locator;
@@ -23,6 +25,8 @@ export class HomePage{
         this.sortOption = page.locator('[data-test="sort"]');
         this.searchField = page.locator('#search-query');
         this.searchBtn = page.locator('[data-test="search-submit"]');
+        this.resetBtn = page.locator('[data-test="search-reset"]');
+        this.noResultsMessage = page.locator('[data-test="no-results"]')
         this.category = page.getByRole('heading', { name: 'By category:' });
         this.brand = page.getByRole('heading', { name: 'By brand:' });
         this.sustainability = page.getByRole('heading', { name: 'Sustainability:' });
@@ -46,9 +50,16 @@ export class HomePage{
     async selectBrand(brand : Brands){
          await this.brand.getByText(brand).click();
     }
-    async searchProduct(text : string) {
+    async searchProducts(text : string) {
         await this.searchField.fill(text);
         await this.searchBtn.click();  
+    }
+    async getNoResultsMessage() {
+        return this.noResultsMessage.textContent();
+}
+    async resetSearchResult(){
+        await this.resetBtn.click();
+        await this.page.waitForLoadState('networkidle');
     }
 
     async getProducts() {

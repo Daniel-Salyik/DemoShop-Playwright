@@ -87,7 +87,9 @@ export class HomePage{
     async getProducts() {
         const products : Product[] = [];
 
-        const productCards = await this.page.locator(".container .card").all();
+        await this.page.waitForLoadState('networkidle');
+    
+        const productCards = await this.page.locator(".container .card").filter({ visible: true }).all();
 
         for(const card of productCards) {
             const productName = await card.locator('[data-test="product-name"]').textContent();

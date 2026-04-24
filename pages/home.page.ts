@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 import { SortOptions } from '../types/sortOptions';
 import { Brands } from '../types/brands';
 import { MainCategory, HandtoolSubCategory, PowerToolsSubCategory, OtherSubCategory } from '../types/productCategories';
@@ -17,7 +17,9 @@ export class HomePage{
     readonly category : Locator;
     readonly brand : Locator;
     readonly sustainability : Locator;
-    readonly badgeLocator: Locator
+    readonly badgeLocator: Locator;
+    readonly minSlider: Locator;
+    readonly maxSlider: Locator;
 
 
     constructor(page : Page){
@@ -31,6 +33,8 @@ export class HomePage{
         this.brand = page.getByRole('heading', { name: 'By brand:' });
         this.sustainability = page.getByRole('heading', { name: 'Sustainability:' });
         this.badgeLocator = page.locator(('[data-test="co2-rating-badge"].active'));
+        this.minSlider = page.getByRole('slider', { name: 'ngx-slider', exact: true });
+        this.maxSlider = page.getByRole('slider', { name: 'ngx-slider-max' });
     }
 
      async goto() {
@@ -59,6 +63,26 @@ export class HomePage{
         await this.resetBtn.click();
         await this.page.waitForLoadState('networkidle');
     }
+    async setPriceRange(minValue: number, maxValue: number) {
+        await this.setSliderValue(this.minSlider, minValue);
+        await this.setSliderValue(this.maxSlider, maxValue);
+}
+
+    private async setSliderValue(handle: Locator, targetValue: number) {
+        await handle.focus();
+        
+        let currentValue = parseInt(await handle.getAttribute('aria-valuenow') || '0');
+        
+        while (currentValue !== targetValue) {
+            if (currentValue < targetValue) {
+                await handle.press('ArrowRight');
+                currentValue++;
+            } else {
+                await handle.press('ArrowLeft');
+                currentValue--;
+            }
+        }
+}
 
     async getProducts() {
         const products : Product[] = [];

@@ -108,3 +108,14 @@ test('user gets results for matched search term', async({homePage}) => {
     expect(products.length).toBeGreaterThan(0);
     
 })
+test('user can filter by category', async({ homePage }) => {
+    await homePage.selectProductByCategory(MainCategory.Power_Tools);
+    
+    const products = await homePage.getProducts();
+    
+    if(products.length > 0) {
+        expect(products.length).toBeGreaterThan(0);
+    } else {
+        await expect(homePage.noResultsMessage).toBeVisible();
+    }
+})

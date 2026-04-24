@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { SortOptions } from '../types/sortOptions';
 import { Brands } from '../types/brands';
-import { MainCategory, HandtoolSubCategory } from '../types/productCategories';
+import { MainCategory, HandtoolSubCategory, PowerToolsSubCategory, OtherSubCategory } from '../types/productCategories';
 import { Product } from '../types/product';
 
 
@@ -41,12 +41,10 @@ export class HomePage{
         await this.sortOption.selectOption(option);
         await this.page.waitForLoadState('networkidle');
     }
-    async selectProductByCategory(category : MainCategory | HandtoolSubCategory){
-        await this.page.locator('#filters').getByText(category).click();
-        
-        await this.page.waitForLoadState('networkidle');
-        
-    }
+    async selectProductByCategory(category: MainCategory | HandtoolSubCategory | PowerToolsSubCategory | OtherSubCategory) {
+    await this.page.locator('#filters').getByText(category, { exact: true }).click();
+    await this.page.waitForLoadState('networkidle');
+}
     async selectBrand(brand : Brands){
          await this.brand.getByText(brand).click();
     }

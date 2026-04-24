@@ -13,3 +13,18 @@ export enum HandtoolSubCategory {
   Chisels = "Chisels",
   Measures = "Measures"
 }
+
+export enum PowerToolsSubCategory {
+  Grinder = "Grinder",
+  Sander = "Sander",
+  Saw = "Saw",
+  Drill = "Drill"
+}
+
+export enum OtherSubCategory {
+  ToolBelts = "Tool Belts",
+  StorageSolutions = "Storage Solutions",
+  Workbeanch = "Workbeanch",
+  SafetyGear = "Safety Gear",
+  Fasteners = "Fasteners",
+}

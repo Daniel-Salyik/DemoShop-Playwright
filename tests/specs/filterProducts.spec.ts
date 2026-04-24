@@ -119,3 +119,24 @@ test('user can filter by category', async({ homePage }) => {
         await expect(homePage.noResultsMessage).toBeVisible();
     }
 })
+
+test('user can filter products by price range', async({ homePage }) => {
+    const minPrice = 30;
+    const maxPrice = 85;
+    
+    await homePage.setPriceRange(minPrice, maxPrice);
+    await homePage.page.waitForLoadState('networkidle');
+    
+    
+    await homePage.sortProducts(SortOptions.PriceAscending);
+    const ascProducts = await homePage.getProducts();
+    const ascPrices = ascProducts.map(p => p.price);
+    expect(ascPrices.length).toBeGreaterThan(0);
+    expect(ascPrices[0]).toBeGreaterThanOrEqual(minPrice);
+    
+    
+    await homePage.sortProducts(SortOptions.PriceDescending);
+    const descProducts = await homePage.getProducts();
+    const descPrices = descProducts.map(p => p.price);
+    expect(descPrices[0]).toBeLessThanOrEqual(maxPrice);
+})

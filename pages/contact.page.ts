@@ -32,6 +32,7 @@ export class ContactPage{
     }
 
   async fillForm(formData: Partial<ContactData>) {
+
     if (formData.firstName !== undefined) await this.firstName.fill(formData.firstName);
     if (formData.lastName !== undefined) await this.lastName.fill(formData.lastName);
     if (formData.email !== undefined) await this.emailAdd.fill(formData.email);
@@ -40,6 +41,9 @@ export class ContactPage{
 }
     async submitForm(){
         await this.sendBtn.click();
+        await this.page.waitForLoadState('networkidle');
+        await this.alert.first().waitFor({ state: 'visible' });
+        
     }
     async getAlertTexts(): Promise<string[]>{
 

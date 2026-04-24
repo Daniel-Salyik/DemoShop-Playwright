@@ -44,6 +44,7 @@ export class HomePage{
     async sortProducts(option : SortOptions){
         await this.sortOption.selectOption(option);
         await this.page.waitForLoadState('networkidle');
+        await this.page.locator(".container .card").first().waitFor({ state: 'visible' });
     }
     async selectProductByCategory(category: MainCategory | HandtoolSubCategory | PowerToolsSubCategory | OtherSubCategory) {
     await this.page.locator('#filters').getByText(category, { exact: true }).click();
@@ -62,6 +63,7 @@ export class HomePage{
     async resetSearchResult(){
         await this.resetBtn.click();
         await this.page.waitForLoadState('networkidle');
+        await this.page.locator(".container .card").first().waitFor({ state: 'visible' });
     }
     async setPriceRange(minValue: number, maxValue: number) {
         await this.setSliderValue(this.minSlider, minValue);

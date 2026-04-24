@@ -15,10 +15,15 @@ export const test = base.extend<Fixtures>({
         await use(homePage);
 
     },
-    contactPage : async({page}, use) => {
+    contactPage : async({browser}, use) => {
+
+        const context = await browser.newContext({serviceWorkers: 'block'});
+        const page = await context.newPage();
         const contactPage = new ContactPage(page);
 
         await contactPage.goto();
         await use(contactPage)
+        await context.close();
+        
     }
 });

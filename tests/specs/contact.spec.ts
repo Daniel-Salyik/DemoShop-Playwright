@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test} from '../fixtures';
+import { expect } from '@playwright/test';
 import { ContactPage } from '../../pages/contact.page';
 import { ContactData } from '../../types/contactData';
 import { ContactTestCase } from '../../types/contactTestCase';
@@ -70,14 +71,13 @@ const testCases: ContactTestCase[] = [
 ];
 
 testCases.forEach(({name, data, expected}) => {
-    test(`Contact form validation: ${name}`, async({page}) => {
-        const contact = new ContactPage(page);
+    test(`Contact form validation: ${name}`, async({contactPage}) => {
+        
 
-        await contact.goto();
-        await contact.fillForm(data as ContactData);
-        await contact.submitForm();
+        await contactPage.fillForm(data as ContactData);
+        await contactPage.submitForm();
 
-        let alertTexts = await contact.getAlertTexts();
+        const alertTexts = await contactPage.getAlertTexts();
 
         for(let message of expected){
             expect(alertTexts).toContain(message);

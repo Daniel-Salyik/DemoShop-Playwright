@@ -42,15 +42,15 @@ export class ContactPage{
         await this.sendBtn.click();
     }
     async getAlertTexts(): Promise<string[]>{
+
+        await this.alert.first().waitFor({ state: 'visible' });
         
 
         // using trim function on the text to avoid any possible white spaces in the text
         const alertText = (await this.alert.allTextContents()).map(text => text.trim());
-        if(alertText !== null) {
-            return alertText;
-        } else{
-            throw new Error("Something went wrong!");
-        }
+
+        return alertText;
+        
     }
 
 

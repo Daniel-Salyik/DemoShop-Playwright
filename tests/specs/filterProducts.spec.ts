@@ -1,11 +1,9 @@
-import { test } from '../fixtures/homePage'
+import { test } from '../fixtures'
 import { expect } from '@playwright/test';
 
-import { Brands } from '../../types/brands';
-import { Product } from '../../types/product';
+
 import { SortOptions } from '../../types/sortOptions';
 import { MainCategory, HandtoolSubCategory } from '../../types/productCategories';
-import { HomePage } from '../../pages/home.page';
 
 
 test(`user can sort products by name ascending`, async ({homePage}) => {

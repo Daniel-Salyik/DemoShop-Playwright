@@ -90,8 +90,8 @@ test('user gets no results for unmatched search term', async({homePage}) => {
     
     await expect(homePage.noResultsMessage).toBeVisible();
 
-    const emptyProducts = await homePage.getProducts();
-    expect(emptyProducts.length).toBe(0);
+    const message = await homePage.getNoResultsMessage();
+    expect(message).toContain('no products found');
     
     
     await homePage.resetSearchResult();
@@ -103,6 +103,7 @@ test('user gets results for matched search term', async({homePage}) => {
     await homePage.searchProducts("hammer");
 
     const products = await homePage.getProducts();
+    
     expect(products.length).toBeGreaterThan(0);
     
 })

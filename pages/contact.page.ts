@@ -41,7 +41,7 @@ export class ContactPage{
 }
     async submitForm(){
         await this.sendBtn.click();
-        await this.page.waitForLoadState('networkidle');
+        
         await this.alert.first().waitFor({ state: 'visible' });
         
     }

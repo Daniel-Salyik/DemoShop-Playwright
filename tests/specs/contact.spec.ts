@@ -1,6 +1,5 @@
 import { test} from '../fixtures';
 import { expect } from '@playwright/test';
-import { ContactPage } from '../../pages/contact.page';
 import { ContactData } from '../../types/contactData';
 import { ContactTestCase } from '../../types/contactTestCase';
 
@@ -15,7 +14,7 @@ const testCases: ContactTestCase[] = [
             subject: "Warranty",
             message: "Test".repeat(15)
         },
-        expected : ["Thanks for your message! We will contact you shortly."]
+        expected : "Thanks for your message! We will contact you shortly."
     },
     {
         name: "Missing first name",
@@ -25,7 +24,7 @@ const testCases: ContactTestCase[] = [
             subject: "Warranty",
             message: "Test message".repeat(5)
         },
-        expected: ["First name is required"]
+        expected: "First name is required"
     },
     {
         name: "Missing email",
@@ -35,7 +34,7 @@ const testCases: ContactTestCase[] = [
             subject: "Customer service",
             message : "Test". repeat(15),
         },
-        expected : ["Email is required"]
+        expected : "Email is required"
     },
     {
         name: "Invalid email format",
@@ -46,7 +45,7 @@ const testCases: ContactTestCase[] = [
             subject: "Warranty",
             message: "Test message".repeat(5)
         },
-        expected: ["Email format is invalid"]
+        expected: "Email format is invalid"
     },
     {
         name: "No subject",
@@ -56,7 +55,7 @@ const testCases: ContactTestCase[] = [
             email: "john@test.com",
             message: "Test message".repeat(5)
         },
-        expected: ["Subject is required"]
+        expected: "Subject is required"
     },
     {
         name: "No message",
@@ -66,7 +65,7 @@ const testCases: ContactTestCase[] = [
             email: "john@test.com",
             subject: "Warranty"
         },
-        expected: ["Message is required"]
+        expected: "Message is required"
     },
 ];
 
@@ -75,12 +74,16 @@ testCases.forEach(({name, data, expected}) => {
         
 
         await contactPage.fillForm(data as ContactData);
+
+        console.log('firstName field value:', await contactPage.firstName.inputValue());
+        console.log('email field value:', await contactPage.emailAdd.inputValue());
+        
         await contactPage.submitForm();
+
 
         const alertTexts = await contactPage.getAlertTexts();
 
-        for(let message of expected){
-            expect(alertTexts).toContain(message);
-        }
+        expect(alertTexts).toContain(expected);
     })
 })
+

@@ -111,13 +111,8 @@ test('user can filter by category', async({ homePage }) => {
     await homePage.selectProductByCategory(MainCategory.Power_Tools);
     
     const products = await homePage.getProducts();
-    
-    if(products.length > 0) {
-        expect(products.length).toBeGreaterThan(0);
-    } else {
-        await expect(homePage.noResultsMessage).toBeVisible();
-    }
-})
+
+    expect(products.length).toBeGreaterThan(0);})
 
 test('user can filter products by price range', async({ homePage }) => {
     const minPrice = 30;

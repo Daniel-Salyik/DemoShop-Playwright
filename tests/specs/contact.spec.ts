@@ -75,6 +75,7 @@ testCases.forEach(({name, data, expected}) => {
 
         await contactPage.fillForm(data as ContactData);
 
+        console.log(`Test case: ${name}`);
         console.log('firstName field value:', await contactPage.firstName.inputValue());
         console.log('email field value:', await contactPage.emailAdd.inputValue());
         

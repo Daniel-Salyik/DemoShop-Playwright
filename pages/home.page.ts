@@ -14,10 +14,8 @@ export class HomePage{
     readonly searchBtn : Locator;
     readonly resetBtn : Locator;
     readonly noResultsMessage : Locator;
-    readonly category : Locator;
     readonly brand : Locator;
     readonly sustainability : Locator;
-    readonly badgeLocator: Locator;
     readonly minSlider: Locator;
     readonly maxSlider: Locator;
 
@@ -29,10 +27,8 @@ export class HomePage{
         this.searchBtn = page.locator('[data-test="search-submit"]');
         this.resetBtn = page.locator('[data-test="search-reset"]');
         this.noResultsMessage = page.locator('[data-test="no-results"]')
-        this.category = page.getByRole('heading', { name: 'By category:' });
         this.brand = page.getByRole('heading', { name: 'By brand:' });
         this.sustainability = page.getByRole('heading', { name: 'Sustainability:' });
-        this.badgeLocator = page.locator(('[data-test="co2-rating-badge"].active'));
         this.minSlider = page.getByRole('slider', { name: 'ngx-slider', exact: true });
         this.maxSlider = page.getByRole('slider', { name: 'ngx-slider-max' });
     }
@@ -44,26 +40,35 @@ export class HomePage{
     async sortProducts(option : SortOptions){
         await this.sortOption.selectOption(option);
 
-        
-        
         await this.page.waitForResponse((response) => response.url().includes('sort') && response.status() === 200);
 
+        await this.waitForProductsToLoad();
 
     }
     async selectProductByCategory(category: MainCategory | HandtoolSubCategory | PowerToolsSubCategory | OtherSubCategory) {
         await this.page.locator('#filters').getByText(category, { exact: true }).click();
 
         await this.page.waitForResponse((response) => response.url().includes('/products') && response.status() === 200);
-    
+
+        await this.waitForProductsToLoad();
+
+
     }
     async selectBrand(brand : Brands){
          await this.brand.getByText(brand).click();
+
+         await this.waitForProductsToLoad();
+
+
     }
     async searchProducts(text : string) {
         await this.searchField.fill(text);
         await this.searchBtn.click(); 
         
         await this.page.waitForResponse((response) => response.url().includes('/search') && response.status() === 200);
+
+        await this.waitForProductsToLoad();
+
     }
 
     async getNoResultsMessage() {
@@ -72,8 +77,12 @@ export class HomePage{
 
     async resetSearchResult(){
         await this.resetBtn.click();
-        
+
+        await this.page.waitForResponse((response) => response.url().includes('/products') && response.status() === 200);
+
         await this.waitForProductsToLoad();
+        
+
     }
     async setPriceRange(minValue: number, maxValue: number) {
         await this.setSliderValue(this.minSlider, minValue);
@@ -99,12 +108,9 @@ export class HomePage{
     async getProducts() {
         const products : Product[] = [];
         
-        await this.waitForProductsToLoad();
-        
-        const cardLocator = this.page.locator('.container .card');
+        const cardLocator = this.page.locator('.container .card').filter({ has: this.page.locator('[data-test="product-name"]') });
 
         const count = await cardLocator.count();
-        
 
 
         for(let i = 0; i < count; i++) {
@@ -134,10 +140,14 @@ export class HomePage{
     }
 
     private async waitForProductsToLoad(){
-        await this.page.locator(".container .card")
-            .filter({ has: this.page.locator('[data-test="product-name"]')})
-            .first()
-            .waitFor({state: 'visible'});
+
+        await this.page.waitForLoadState();
+
+
+        // await this.page.locator(".container .card")
+        //     .filter({ has: this.page.locator('[data-test="product-name"]')})
+        //     .last()
+        //     .waitFor({state: 'visible'});
 
     }
     

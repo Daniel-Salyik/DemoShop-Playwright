@@ -33,6 +33,11 @@ export class ContactPage{
 
   async fillForm(formData: Partial<ContactData>) {
 
+    await this.firstName.clear();
+    await this.lastName.clear();
+    await this.emailAdd.clear();
+    await this.message.clear();
+
     if (formData.firstName !== undefined) await this.firstName.fill(formData.firstName);
     if (formData.lastName !== undefined) await this.lastName.fill(formData.lastName);
     if (formData.email !== undefined) await this.emailAdd.fill(formData.email);

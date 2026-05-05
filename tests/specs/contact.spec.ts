@@ -26,6 +26,16 @@ const testCases: ContactTestCase[] = [
         },
         expected: "First name is required"
     },
+     {
+        name: "Missing last name",
+        data: {
+            firstName: "John",
+            email: "john@test.com",
+            subject: "Warranty",
+            message: "Test message".repeat(5)
+        },
+        expected: "Last name is required"
+    },
     {
         name: "Missing email",
         data: {
@@ -74,10 +84,6 @@ testCases.forEach(({name, data, expected}) => {
         
 
         await contactPage.fillForm(data as ContactData);
-
-        console.log(`Test case: ${name}`);
-        console.log('firstName field value:', await contactPage.firstName.inputValue());
-        console.log('email field value:', await contactPage.emailAdd.inputValue());
         
         await contactPage.submitForm();
 

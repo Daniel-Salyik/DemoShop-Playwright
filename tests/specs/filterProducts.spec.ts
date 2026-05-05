@@ -1,11 +1,9 @@
-import { test } from '../fixtures/homePage'
+import { test } from '../fixtures'
 import { expect } from '@playwright/test';
 
-import { Brands } from '../../types/brands';
-import { Product } from '../../types/product';
+
 import { SortOptions } from '../../types/sortOptions';
 import { MainCategory, HandtoolSubCategory } from '../../types/productCategories';
-import { HomePage } from '../../pages/home.page';
 
 
 test(`user can sort products by name ascending`, async ({homePage}) => {
@@ -92,8 +90,8 @@ test('user gets no results for unmatched search term', async({homePage}) => {
     
     await expect(homePage.noResultsMessage).toBeVisible();
 
-    const emptyProducts = await homePage.getProducts();
-    expect(emptyProducts.length).toBe(0);
+    const message = await homePage.getNoResultsMessage();
+    expect(message).toContain('no products found');
     
     
     await homePage.resetSearchResult();
@@ -105,6 +103,7 @@ test('user gets results for matched search term', async({homePage}) => {
     await homePage.searchProducts("hammer");
 
     const products = await homePage.getProducts();
+    
     expect(products.length).toBeGreaterThan(0);
     
 })
@@ -112,13 +111,8 @@ test('user can filter by category', async({ homePage }) => {
     await homePage.selectProductByCategory(MainCategory.Power_Tools);
     
     const products = await homePage.getProducts();
-    
-    if(products.length > 0) {
-        expect(products.length).toBeGreaterThan(0);
-    } else {
-        await expect(homePage.noResultsMessage).toBeVisible();
-    }
-})
+
+    expect(products.length).toBeGreaterThan(0);})
 
 test('user can filter products by price range', async({ homePage }) => {
     const minPrice = 30;

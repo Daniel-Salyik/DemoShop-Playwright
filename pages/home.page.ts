@@ -14,10 +14,8 @@ export class HomePage{
     readonly searchBtn : Locator;
     readonly resetBtn : Locator;
     readonly noResultsMessage : Locator;
-    readonly category : Locator;
     readonly brand : Locator;
     readonly sustainability : Locator;
-    readonly badgeLocator: Locator;
     readonly minSlider: Locator;
     readonly maxSlider: Locator;
 
@@ -29,10 +27,8 @@ export class HomePage{
         this.searchBtn = page.locator('[data-test="search-submit"]');
         this.resetBtn = page.locator('[data-test="search-reset"]');
         this.noResultsMessage = page.locator('[data-test="no-results"]')
-        this.category = page.getByRole('heading', { name: 'By category:' });
         this.brand = page.getByRole('heading', { name: 'By brand:' });
         this.sustainability = page.getByRole('heading', { name: 'Sustainability:' });
-        this.badgeLocator = page.locator(('[data-test="co2-rating-badge"].active'));
         this.minSlider = page.getByRole('slider', { name: 'ngx-slider', exact: true });
         this.maxSlider = page.getByRole('slider', { name: 'ngx-slider-max' });
     }
@@ -43,25 +39,50 @@ export class HomePage{
 
     async sortProducts(option : SortOptions){
         await this.sortOption.selectOption(option);
-        await this.page.waitForLoadState('networkidle');
+
+        await this.page.waitForResponse((response) => response.url().includes('sort') && response.status() === 200);
+
+        await this.waitForProductsToLoad();
+
     }
     async selectProductByCategory(category: MainCategory | HandtoolSubCategory | PowerToolsSubCategory | OtherSubCategory) {
-    await this.page.locator('#filters').getByText(category, { exact: true }).click();
-    await this.page.waitForLoadState('networkidle');
-}
+        await this.page.locator('#filters').getByText(category, { exact: true }).click();
+
+        await this.page.waitForResponse((response) => response.url().includes('/products') && response.status() === 200);
+
+        await this.waitForProductsToLoad();
+
+
+    }
     async selectBrand(brand : Brands){
          await this.brand.getByText(brand).click();
+
+         await this.waitForProductsToLoad();
+
+
     }
     async searchProducts(text : string) {
         await this.searchField.fill(text);
-        await this.searchBtn.click();  
+        await this.searchBtn.click(); 
+        
+        await this.page.waitForResponse((response) => response.url().includes('/search') && response.status() === 200);
+
+        await this.waitForProductsToLoad();
+
     }
+
     async getNoResultsMessage() {
         return this.noResultsMessage.textContent();
-}
+    }
+
     async resetSearchResult(){
         await this.resetBtn.click();
-        await this.page.waitForLoadState('networkidle');
+
+        await this.page.waitForResponse((response) => response.url().includes('/products') && response.status() === 200);
+
+        await this.waitForProductsToLoad();
+        
+
     }
     async setPriceRange(minValue: number, maxValue: number) {
         await this.setSliderValue(this.minSlider, minValue);
@@ -86,18 +107,22 @@ export class HomePage{
 
     async getProducts() {
         const products : Product[] = [];
+        
+        const cardLocator = this.page.locator('.container .card').filter({ has: this.page.locator('[data-test="product-name"]') });
 
-        await this.page.waitForLoadState('networkidle');
-    
-        const productCards = await this.page.locator(".container .card").filter({ visible: true }).all();
+        const count = await cardLocator.count();
 
-        for(const card of productCards) {
+
+        for(let i = 0; i < count; i++) {
+            const card = cardLocator.nth(i);
             const productName = await card.locator('[data-test="product-name"]').textContent();
             const priceText = await card.locator('[data-test="product-price"]').textContent();
            
             const price = parseFloat(priceText?.replace('$', '') || '0');
 
-            const badgeRating = await this.badgeLocator.count() > 0 ? await this.badgeLocator.textContent() : ""
+            const badgeLocator = card.locator('[data-test="co2-rating-badge"].active');
+            const badgeRating = await badgeLocator.count() > 0 
+                ? await badgeLocator.textContent() : ""
 
             const isEco = await card.locator('[data-test="eco-badge"]').isVisible();
 
@@ -112,6 +137,18 @@ export class HomePage{
         }
 
         return products;
+    }
+
+    private async waitForProductsToLoad(){
+
+        await this.page.waitForLoadState();
+
+
+        // await this.page.locator(".container .card")
+        //     .filter({ has: this.page.locator('[data-test="product-name"]')})
+        //     .last()
+        //     .waitFor({state: 'visible'});
+
     }
     
 

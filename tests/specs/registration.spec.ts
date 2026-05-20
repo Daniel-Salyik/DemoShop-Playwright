@@ -1,8 +1,10 @@
-import { test, page } from '../fixtures'
+import { test } from '../fixtures'
 import { expect } from '@playwright/test';
 import { generateUserData } from '../../utils/generateUserData';
 import { UserData } from '../../types/userData';
 import { LoginPage } from '../../pages/login.page';
+import  env  from '../../utils/env';
+
 
 test('user can register new account with valid credentials', async({registrationPage}) => {
 
@@ -18,3 +20,10 @@ test('user can register new account with valid credentials', async({registration
     await expect(loginPage.page).toHaveURL(/auth\/login/);
 
 })
+
+test('user cannot register with  already registered email', async({registrationPage})=>{
+
+        const email = env.REGISTERED_EMAIL_FOR_USER1;
+        const password = env.PASSWORD_FOR_USER1;
+        console.log(email,password)
+    })

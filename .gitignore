@@ -27,3 +27,4 @@ yarn-error.log*
 tests/example.spec.ts
 utils/.env
 tests/sort.spec.ts
+.env

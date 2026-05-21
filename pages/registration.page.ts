@@ -12,7 +12,7 @@ export class RegistrationPage {
 
 
     async goto() {
-        await this.page.goto('https://practicesoftwaretesting.com/auth/register');
+        await this.page.goto('/auth/register');
     }
 
     async registerNewAccount(newUserData : UserData){

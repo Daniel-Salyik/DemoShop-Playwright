@@ -24,6 +24,11 @@ export class RegistrationPage {
         await this.page.locator('[data-test="country"]').selectOption(newUserData.country);
         await this.page.locator('[data-test="postal_code"]').fill(newUserData.postalCode);
         await this.page.locator('[data-test="house_number"]').fill(newUserData.houseNumber);
+
+
+        // // waiting for the postalcode lookup api response
+        // await this.page.waitForResponse(response => response.ok());
+
         await this.page.locator('[data-test="street"]').fill(newUserData.street);
         await this.page.locator('[data-test="city"]').fill(newUserData.city);
         await this.page.locator('[data-test="state"]').fill(newUserData.state);
@@ -34,5 +39,14 @@ export class RegistrationPage {
         await this.page.locator('[data-test="password"]').blur()
 
         await this.page.locator('[data-test="register-submit"]').click();
+
+        // await this.page.waitForResponse(response => 
+        //     response.url().includes('/users/register') && (response.status() === 201 || response.status() === 409));
+
+    }
+
+    async getAlertMessage(locator: string) : Promise<string>{
+        await this.page.locator(locator).waitFor({ state: 'visible' });
+        return await this.page.locator(locator).textContent() ?? "";
     }
 }

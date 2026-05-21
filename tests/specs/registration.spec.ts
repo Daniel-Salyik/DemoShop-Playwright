@@ -25,5 +25,14 @@ test('user cannot register with  already registered email', async({registrationP
 
         const email = env.REGISTERED_EMAIL_FOR_USER1;
         const password = env.PASSWORD_FOR_USER1;
-        console.log(email,password)
+        
+        const userData : UserData = generateUserData();
+        userData.email = email;
+
+        await registrationPage.registerNewAccount(userData);
+
+        const alert = await registrationPage.getAlertMessage('.help-block');
+
+        expect(alert).toContain("this email address already exists")
+
     })

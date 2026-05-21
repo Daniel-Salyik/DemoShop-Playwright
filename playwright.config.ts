@@ -6,7 +6,12 @@ import { defineConfig, devices } from '@playwright/test';
  */
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+import { cwd } from 'process';
+
+if(!process.env.CI){
+  dotenv.config({ path: path.resolve(cwd(), '.env') });
+}
+
 
 /**
  * See https://playwright.dev/docs/test-configuration.

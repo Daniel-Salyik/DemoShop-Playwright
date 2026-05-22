@@ -16,8 +16,9 @@ test('user can register new account with valid credentials', async({registration
 
     const loginPage = new LoginPage(registrationPage.page);
 
-    await expect(loginPage.page.locator('[data-test="login-submit"]')).toBeVisible();
     await expect(loginPage.page).toHaveURL(/auth\/login/);
+    await expect(loginPage.page.locator('[data-test="login-submit"]')).toBeVisible();
+    
 
 })
 

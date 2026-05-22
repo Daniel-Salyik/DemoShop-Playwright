@@ -8,6 +8,9 @@ import  env  from '../../utils/env';
 
 test('user can register new account with valid credentials', async({registrationPage}) => {
 
+    // skip in CI due to CAPTCHA blocking registration
+    test.skip(!!process.env.CI, "CAPTCHA blocks registration in CI")
+
     const newAccountData : UserData = generateUserData();
 
     await registrationPage.registerNewAccount(newAccountData);

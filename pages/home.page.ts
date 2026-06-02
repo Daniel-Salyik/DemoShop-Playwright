@@ -63,6 +63,8 @@ export class HomePage{
     }
     async searchProducts(text : string) {
         await this.searchField.fill(text);
+
+        
         await this.searchBtn.click(); 
         
         await this.page.waitForResponse((response) => response.url().includes('/search') && response.status() === 200);
@@ -72,7 +74,7 @@ export class HomePage{
     }
 
     async getNoResultsMessage() {
-        return this.noResultsMessage.textContent();
+        return await this.noResultsMessage.textContent();
     }
 
     async resetSearchResult(){
@@ -141,13 +143,13 @@ export class HomePage{
 
     private async waitForProductsToLoad(){
 
-        await this.page.waitForLoadState();
-
-
-        // await this.page.locator(".container .card")
-        //     .filter({ has: this.page.locator('[data-test="product-name"]')})
-        //     .last()
-        //     .waitFor({state: 'visible'});
+        await Promise.race([
+            this.page.locator('.container .card')
+                .filter({ has: this.page.locator('[data-test="product-name"]') })
+                .first()
+                .waitFor({ state: 'visible' }),
+            this.noResultsMessage.waitFor({ state: 'visible' })
+        ]);
 
     }
     

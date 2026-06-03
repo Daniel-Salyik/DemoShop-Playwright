@@ -8,6 +8,10 @@ export class FavoritesPage {
         this.page = page;
     }
 
+    async goto(){
+        this.page.goto('/account/favorites')
+    }
+
     async deleteFromFavorites(){
         await this.page.locator('[data-test="delete"]').click()
     }

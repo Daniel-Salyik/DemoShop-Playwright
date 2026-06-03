@@ -9,13 +9,19 @@ export class ProductPage {
     }
 
     async addToFavorites(){
-
-        const token = await this.page.evaluate(() => localStorage.getItem('token'));
-console.log(token);
-        await this.page.locator('[data-test="add-to-favorites"]').click();
+         await this.page.locator('[data-test="add-to-favorites"]').click();
     }
+
+
     async addToCart(){
         await this.page.locator('[data-test="add-to-cart"]').click();
+    }
+
+    async getToastMessage(): Promise<string> {
+        const toast = this.page.locator('#toast-container');
+        await toast.waitFor({ state: 'visible' });
+        const message = await toast.textContent() ?? '';
+        return message;
     }
     
 }

@@ -1,4 +1,4 @@
-export type UserData {
+export type UserData = {
     firstname : string,
     lastname : string,
     dateOfBirth : string,

@@ -7,6 +7,7 @@ import { AccountPage } from '../../pages/account.page';
 import env from '../../utils/env';
 import { FavoritesPage } from '../../pages/favoritesPage';
 import { ProductPage } from '../../pages/productPage';
+import { ProfilePage } from '../../pages/profile.page';
 
 type Fixtures = {
     homePage : HomePage,
@@ -16,6 +17,7 @@ type Fixtures = {
     accountPage : AccountPage
     favoritesPage : FavoritesPage
     productPage : ProductPage
+    profilePage : ProfilePage
 }
 
 export { expect };
@@ -76,6 +78,12 @@ export const test = base.extend<Fixtures>({
         const productPage = new ProductPage(page);
 
         await use(productPage);
+    },
+    profilePage : async({page}, use) => {
+        const profilePage = new ProfilePage(page);
+
+        await use(profilePage);
+
     }
 
 });

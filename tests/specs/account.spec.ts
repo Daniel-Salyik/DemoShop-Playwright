@@ -4,7 +4,8 @@ import env from '../../utils/env';
 import { AccountPage } from '../../pages/account.page';
 import { HomePage } from '../../pages/home.page';
 import { ProductPage } from '../../pages/productPage';
-import { FavoritesPage } from '../../pages/favoritesPage';
+import { ProfilePage } from '../../pages/profile.page';
+import { generateUserData } from '../../utils/generateUserData';
 
 test.describe('favorites', () => {
 
@@ -51,5 +52,29 @@ test.describe('favorites', () => {
         const message = await productPage.getToastMessage();
 
         expect(message).toContain("Unauthorized")
+    })
+})
+
+test.describe('profile', ()=> {
+    test('user can update profile information', async({loginPage})=> {
+
+        const updateData  = generateUserData();
+
+        await loginPage.login(env.REGISTERED_EMAIL_FOR_USER1, env.PASSWORD_FOR_USER1);
+
+        await expect(loginPage.page).toHaveURL(/account/);
+
+        const accountPage = new AccountPage(loginPage.page);
+
+        await accountPage.page.locator('[data-test="nav-profile"]').click()
+
+        const profilePage = new ProfilePage(accountPage.page)
+
+        await profilePage.page.waitForResponse(response => response.url().includes('/users/me') && response.status() === 200);
+
+        await profilePage.updateProfile(updateData);
+
+        await expect(profilePage.page.locator('.alert-success')).toHaveText('Your profile is successfully updated!', { timeout: 4000 });
+
     })
 })

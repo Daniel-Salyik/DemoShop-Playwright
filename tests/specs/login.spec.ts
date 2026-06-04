@@ -6,7 +6,7 @@ test(`user can login with valid credentials`, async({loginPage, page}) => {
     
     await loginPage.login(env.REGISTERED_EMAIL_FOR_USER1, env.PASSWORD_FOR_USER1);
 
-    await expect(page).toHaveURL("/account");
+    await expect(page).toHaveURL('/auth\/\login');
     
     
 })

@@ -141,7 +141,7 @@ export class HomePage{
         return products;
     }
 
-    private async waitForProductsToLoad(){
+    public async waitForProductsToLoad(){
 
         await Promise.race([
             this.page.locator('.container .card')
